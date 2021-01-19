@@ -6,50 +6,47 @@ import java.util.Date;
 import java.util.Scanner;
 
 import model.entities.Reservation;
+import model.exceptions.DomainException;
 
 public class Program {
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) {
 		
 		Scanner temp = new Scanner(System.in);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		
-		System.out.print("Room Number: ");
-		int roomNumber = temp.nextInt();
+		try {
+			System.out.print("Room Number: ");
+			int roomNumber = temp.nextInt();		
+			System.out.print("Check-in date (dd/MM/yyyy): ");
+			Date checkIn = sdf.parse(temp.next());		
+			System.out.print("Check-out date (dd/MM/yyyy): ");
+			Date checkOut = sdf.parse(temp.next());
+			
 		
-		System.out.print("Check-in date (dd/MM/yyyy): ");
-		Date checkIn = sdf.parse(temp.next());
-		
-		System.out.print("Check-out date (dd/MM/yyyy): ");
-		Date checkOut = sdf.parse(temp.next());
-		
-		if(!checkOut.after(checkIn)) {//Analisando se a data checkOut é depois de checkIn.
-			System.out.println("Erro na reserva!");
-			System.out.println("Data do final da reserva não pode ser antes da data do início!");
-		}
-		else {
 			Reservation reservation = new Reservation(roomNumber, checkIn, checkOut);
 			System.out.println("Reservation: "+reservation);
 			
 			System.out.println();
-			System.out.println("Digite os dados para atualizar reserva: ");
-									
+			System.out.println("Digite os dados para atualizar reserva: ");								
 			System.out.print("Check-in date (dd/MM/yyyy): ");
-			checkIn = sdf.parse(temp.next());
-			
+			checkIn = sdf.parse(temp.next());		
 			System.out.print("Check-out date (dd/MM/yyyy): ");
 			checkOut = sdf.parse(temp.next());			
 			
 			
-			String error = reservation.updateDates(checkIn, checkOut);
-			if(error!=null) {
-				System.out.println(error);
-			}else {
-				System.out.println("Reservation: "+reservation);
-			}			
-			
+			reservation.updateDates(checkIn, checkOut);		
+			System.out.println("Reservation: "+reservation);
 		}
-	
+		catch(ParseException e) {//Para tratar o erro do trecho: Date checkOut = sdf.parse(temp.next());
+			System.out.println("Data inválida!");
+		}
+		catch(DomainException e) {
+			System.out.println(e.getMessage());//Mostrando a mensagem lançada pelo método updateDates()
+		}
+		catch(RuntimeException e) {
+			System.out.println("Erro inesperado!");
+		}
 		
 		temp.close();
 
