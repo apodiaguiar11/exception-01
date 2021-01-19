@@ -46,9 +46,22 @@ public class Reservation {
 		
 	}
 	
-	public void updateDates(Date checkIn, Date checkOut) {
-		this.checkIn = checkIn;
-		this.checkOut = checkOut;
+	public String updateDates(Date checkIn, Date checkOut) {
+		
+		Date now = new Date();
+		if(checkIn.before(now) || checkOut.before(now)) {
+			return "Erro na reserva!\n"+
+			"As datas para atualização da reserva precisam ser após as datas da reserva atual!";
+		}
+		if(!checkOut.after(checkIn)) {
+			return "Erro na reserva!\n"+
+			"Data do final da reserva não pode ser antes da data do início!";
+		}
+		
+			this.checkIn = checkIn;
+			this.checkOut = checkOut;
+			return null;
+					
 	}
 	
 	@Override
